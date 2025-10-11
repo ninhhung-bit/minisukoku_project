@@ -30,7 +30,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Sudoku simple\Menu.cpp" />
-    <ClCompile Include="Sudoku simple\sudoku4x4.cpp" />
+    <ClCompile Include="Sudoku simple\sudoku.cpp" />
     <ClCompile Include="Sudoku simple\ui.cpp" />
   </ItemGroup>
   <ItemGroup>

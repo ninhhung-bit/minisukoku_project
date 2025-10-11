@@ -13,6 +13,7 @@ void ve_kitu(const string& ki_tu, SDL_Rect rect, SDL_Color mau) {
     }
 
     SDL_Surface* surface = TTF_RenderText_Blended(font, ki_tu.c_str(), mau);
+
     if (!surface) {
         SDL_Log("Failed to create surface: %s", TTF_GetError());
         return;

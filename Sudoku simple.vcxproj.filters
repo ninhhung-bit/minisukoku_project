@@ -35,7 +35,7 @@
     <ClCompile Include="Sudoku simple\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Sudoku simple\sudoku4x4.cpp">
+    <ClCompile Include="Sudoku simple\sudoku.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Sudoku simple\ui.cpp">
