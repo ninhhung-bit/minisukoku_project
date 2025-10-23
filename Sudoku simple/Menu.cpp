@@ -1,29 +1,50 @@
 ﻿#include "Menu.h"
 #include "GameState.h"
+#include <SDL_image.h>
 
 Menu::Menu(SDL_Renderer* renderer, TTF_Font* font) : renderer(renderer), font(font) {
+
+    menuBackgroundTexture = IMG_LoadTexture(renderer, "menu.png");
     // Menu chính
     mainButtons = {
         {{300, 250, 200, 60}, "Level"},
-        {{300, 330, 200, 60}, "Setting"}
+        {{300, 350, 200, 60}, "Setting"},
+        {{300, 450, 200, 60}, "Out Game"}
     };
     // Menu độ khó
     difficultyButtons = {
         {{300, 250, 200, 60}, "Easy (4x4)"},
-        {{300, 330, 200, 60}, "Hard (9x9)"},
-        {{300, 410, 200, 60}, "Back!"}
+        {{300, 350, 200, 60}, "Hard (9x9)"},
+        {{300, 450, 200, 60}, "Back!"}
     };
     // Settings menu
     settingsButtons = {
-        {{300, 250, 200, 60}, "Vollum"},
-        {{300, 330, 200, 60}, "Outgame"},
-        {{300, 410, 200, 60}, "Back!"}
+        {{300, 250, 200, 60}, "Volume"},
+        {{300, 350, 200, 60}, "Out game"},
+        {{300, 450, 200, 60}, "Back!"}
     };
+
 }
 
+Menu::~Menu() {
+    if (menuBackgroundTexture) {
+        SDL_DestroyTexture(menuBackgroundTexture);
+        menuBackgroundTexture = NULL;
+    }
+}
+
+
 void Menu::render(GameState state) {
-    SDL_SetRenderDrawColor(renderer, 245, 245, 245, 255);
-    SDL_RenderClear(renderer);
+
+    if (menuBackgroundTexture) {
+        // Vẽ ảnh nền lên toàn bộ màn hình
+        SDL_RenderCopy(renderer, menuBackgroundTexture, NULL, NULL);
+    }
+    else {
+        // Nếu ảnh bị lỗi
+        SDL_SetRenderDrawColor(renderer, 245, 245, 245, 255);
+        SDL_RenderClear(renderer);
+    }
 
     SDL_Color textColor = { 0, 0, 0, 255 };
     SDL_Surface* titleSurf = TTF_RenderText_Blended(font, "Simple Sudoku", textColor);
@@ -50,9 +71,9 @@ void Menu::render(GameState state) {
 void Menu::renderButtons(const std::vector<Button>& buttons) {
     SDL_Color textColor = { 0, 0, 0, 255 };
     for (auto& b : buttons) {
-        SDL_SetRenderDrawColor(renderer, 230, 230, 230, 255); // nền sáng hơn
+        SDL_SetRenderDrawColor(renderer, 230, 230, 230, 255); // nền sáng
         SDL_RenderFillRect(renderer, &b.rect);
-        SDL_SetRenderDrawColor(renderer, 50, 50, 50, 255);    // viền đậm
+        SDL_SetRenderDrawColor(renderer, 50, 50, 50, 255);    // viền đậm   
         SDL_RenderDrawRect(renderer, &b.rect);
 
         SDL_Color textColor = { 0, 0, 0, 255 };
@@ -89,6 +110,9 @@ GameState Menu::handleEvent(SDL_Event& e, GameState state) {
         }
         if (isInside(mx, my, mainButtons[1].rect)) {
             return GameState::MENU_SETTINGS;
+        }
+        if (isInside(mx, my, mainButtons[2].rect)) {
+            return GameState::EXIT;
         }
     }
     else if (state == GameState::MENU_DIFFICULTY) {

@@ -24,10 +24,10 @@
     <ClInclude Include="Sudoku simple\ui.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GameState.h">
+    <ClInclude Include="Sudoku simple\Menu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Sudoku simple\Menu.h">
+    <ClInclude Include="Sudoku simple\GameState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

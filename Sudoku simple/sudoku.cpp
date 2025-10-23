@@ -25,12 +25,17 @@ bool so_hople(const vector<vector<int>>& bang, int hang, int cot, int so) {
     return true;
 }
 
-// điền số vào bảng (đệ quy)
+// điền số vào bảng
 bool dien_vao_bang(vector<vector<int>>& bang, int hang, int cot) {
     int n = bang.size();
     if (hang == n) return true;
 
-    int dong_tiep = (cot == n - 1) ? hang + 1 : hang;
+    int dong_tiep;
+    if (cot == n - 1) {
+        dong_tiep = hang + 1;
+    } else {
+        dong_tiep = hang;
+    }
     int cot_tiep = (cot + 1) % n;
 
     vector<int> danh_sach(n);
@@ -92,7 +97,7 @@ bool kiemtrabang_dung(const vector<vector<int>>& bang) {
         }
     }
 
-    // khối vuông nhỏ
+    // vùng vuông nhỏ
     for (int r = 0; r < n; r += k)
         for (int c = 0; c < n; c += k) {
             vector<int> check(n + 1, 0);

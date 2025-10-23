@@ -3,6 +3,7 @@
 #include <SDL_ttf.h>
 #include <vector>
 #include <string>
+#include <SDL_image.h>
 #include "sudoku.h"
 #include "cell.h"
 #include "ui.h"
@@ -13,7 +14,7 @@ using namespace std;
 
 const int SCREEN_WIDTH = 850;
 const int SCREEN_HEIGHT = 750;
- 
+
 
 SDL_Window* cua_so_gemm = nullptr; // đổi tên biến
 /*SDL_Renderer* renderer = nullptr; // Thêm biến toàn cục cho renderer
@@ -28,7 +29,7 @@ void khoitao_bang(int gridSize, int kichthuoc , int ocanxoa) {
    
     dapAnDayDu = taoBangDayDu(gridSize);
     bangDangChoi = dapAnDayDu;
-    xoaOngaunhien(bangDangChoi, ocanxoa); // hàm xoá 6 ô bất kì
+    xoaOngaunhien(bangDangChoi, ocanxoa);
 
     oTrongBang.clear();
 
@@ -80,9 +81,9 @@ void khoitao_bang(int gridSize, int kichthuoc , int ocanxoa) {
 }
 
 
-void runSudoku4x4(SDL_Renderer* renderer, SDL_Window* window, TTF_Font* font) {
+void runSudoku4x4(SDL_Renderer* renderer, SDL_Window* window, TTF_Font* font, int ocanxoa) {
 
-    khoitao_bang(4,80,6);
+    khoitao_bang(4,80,ocanxoa);
 
     bool dangchay = true;
     bool dang_keo = false;
@@ -91,6 +92,14 @@ void runSudoku4x4(SDL_Renderer* renderer, SDL_Window* window, TTF_Font* font) {
 
     const int ACTUAL_WINDOW_WIDTH = 850; 
     const int ACTUAL_WINDOW_HEIGHT = 750;
+
+    SDL_Texture* backgroundTexture = IMG_LoadTexture(renderer, "4x4.png");
+
+    if (backgroundTexture == NULL)
+    {
+        printf("loi! SDL_image: %s\n", IMG_GetError());
+        return;
+    }
 
     // Kích thước các nút dưới
     int buttonWidth = 140; // chiều rộng nút
@@ -182,6 +191,9 @@ void runSudoku4x4(SDL_Renderer* renderer, SDL_Window* window, TTF_Font* font) {
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
         SDL_RenderClear(renderer);
 
+        // ve background
+        SDL_RenderCopy(renderer, backgroundTexture, NULL, NULL);
+
         // vẽ bànn chơii
         vebangg(oTrongBang, dayso_luachon, so_dangkeo, vitri_chuot, dang_keo);
 
@@ -213,14 +225,16 @@ void runSudoku4x4(SDL_Renderer* renderer, SDL_Window* window, TTF_Font* font) {
 }
 
 
-void runSudoku9x9(SDL_Renderer* renderer, SDL_Window* window, TTF_Font* font) {
+void runSudoku9x9(SDL_Renderer* renderer, SDL_Window* window, TTF_Font* font, int ocanxoa) {
 
-    khoitao_bang(9, 50, 30);
+    khoitao_bang(9, 50, ocanxoa);
 
     bool dangchay = true;
     bool dang_keo = false;
     int so_dangkeo = 0;
     SDL_Point vitri_chuot = { 0,0 };
+
+    SDL_Texture* backgroundTexture = IMG_LoadTexture(renderer, "9x9.png");
 
     // Phần layout các nút bên dưới không phụ thuộc vào grid nên có thể giữ nguyên
     int buttonWidth = 140;
@@ -295,6 +309,9 @@ void runSudoku9x9(SDL_Renderer* renderer, SDL_Window* window, TTF_Font* font) {
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
         SDL_RenderClear(renderer);
 
+        // ve background
+        SDL_RenderCopy(renderer, backgroundTexture, NULL, NULL);
+
         vebangg(oTrongBang, dayso_luachon, so_dangkeo, vitri_chuot, dang_keo);
 
         SDL_Rect checkBtn = { buttonsGroupStartX, buttonsStartY , buttonWidth, buttonHeight };
@@ -323,6 +340,8 @@ int main(int argc, char* argv[]) {
 
     SDL_Init(SDL_INIT_VIDEO);
     TTF_Init();
+
+    IMG_Init(IMG_INIT_PNG);
 
     SDL_Window* window = SDL_CreateWindow("Mini Sudoku", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 850, 750, 0);
     SDL_Renderer* main_renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
@@ -353,11 +372,11 @@ int main(int argc, char* argv[]) {
             running = false;
 
         } else if (state == GameState::GAME_4x4) {
-            runSudoku4x4(renderer, window, font);
+            runSudoku4x4(renderer, window, font, 6);
             state = GameState::MENU_MAIN; // quay lại menu sau khi chơi xong
         }
         else if (state == GameState::GAME_9x9) {
-            runSudoku9x9(renderer, window, font); 
+            runSudoku9x9(renderer, window, font, 30); 
             state = GameState::MENU_MAIN;
         }
        
@@ -370,6 +389,7 @@ int main(int argc, char* argv[]) {
     TTF_CloseFont(font);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
+    IMG_Quit();
     TTF_Quit();
     SDL_Quit();
 

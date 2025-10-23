@@ -13,12 +13,15 @@ struct Button {
 class Menu {
 public:
     Menu(SDL_Renderer* renderer, TTF_Font* font);
+    ~Menu();
 
     void render(GameState state);
     GameState handleEvent(SDL_Event& e, GameState state);
 
 private:
     SDL_Renderer* renderer;
+    
+    SDL_Texture* menuBackgroundTexture;
     TTF_Font* font;
 
     std::vector<Button> mainButtons;
