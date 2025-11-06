@@ -30,6 +30,9 @@
     <ClInclude Include="Sudoku simple\GameState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Sudoku simple\AudioManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sudoku simple\main.cpp">
@@ -42,6 +45,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Sudoku simple\Menu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Sudoku simple\AudioManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

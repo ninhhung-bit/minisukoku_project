@@ -1,10 +1,16 @@
 ﻿#include "Menu.h"
 #include "GameState.h"
+#include "AudioManager.h"
 #include <SDL_image.h>
+#include <iostream>
+
+using namespace std;
+
 
 Menu::Menu(SDL_Renderer* renderer, TTF_Font* font) : renderer(renderer), font(font) {
 
     menuBackgroundTexture = IMG_LoadTexture(renderer, "menu.png");
+
     // Menu chính
     mainButtons = {
         {{300, 250, 200, 60}, "Level"},
@@ -106,38 +112,58 @@ GameState Menu::handleEvent(SDL_Event& e, GameState state) {
 
     if (state == GameState::MENU_MAIN) {
         if (isInside(mx, my, mainButtons[0].rect)) {
+            AudioManager::getInstance().playClick();
             return GameState::MENU_DIFFICULTY;
         }
         if (isInside(mx, my, mainButtons[1].rect)) {
+            AudioManager::getInstance().playClick();
             return GameState::MENU_SETTINGS;
         }
         if (isInside(mx, my, mainButtons[2].rect)) {
+            AudioManager::getInstance().playClick();
             return GameState::EXIT;
         }
     }
     else if (state == GameState::MENU_DIFFICULTY) {
         if (isInside(mx, my, difficultyButtons[0].rect)) {
+            AudioManager::getInstance().playClick();
             return GameState::GAME_4x4;
         }
 
         if (isInside(mx, my, difficultyButtons[1].rect)) {
+            AudioManager::getInstance().playClick();
             return GameState::GAME_9x9;
         }
 
         if (isInside(mx, my, difficultyButtons[2].rect)) {
+            AudioManager::getInstance().playClick();
             return GameState::MENU_MAIN;
         }
     }
     else if (state == GameState::MENU_SETTINGS) {
         if (isInside(mx, my, settingsButtons[0].rect)) {
+            AudioManager::getInstance().playClick();
+
             // âm lượng
+            int volume = AudioManager::getInstance().getVolume();   // 🔹 lấy âm lượng hiện tại
+            volume -= 32;
+            if (volume < 0) volume = MIX_MAX_VOLUME;
+
+            AudioManager::getInstance().setVolume(volume);           // 🔹 áp dụng lại
+
+            settingsButtons[0].text = "Volume: " + std::to_string(volume);
+
+            cout << "Volume now: " << volume << endl;
+
         }
 
         if (isInside(mx, my, settingsButtons[1].rect)) {
+            AudioManager::getInstance().playClick();
             return GameState::EXIT;
         }
 
         if (isInside(mx, my, settingsButtons[2].rect)) {
+            AudioManager::getInstance().playClick();
             return GameState::MENU_MAIN;
         }
     }

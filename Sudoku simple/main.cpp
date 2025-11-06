@@ -3,7 +3,9 @@
 #include <SDL_ttf.h>
 #include <vector>
 #include <string>
+#include <SDL_mixer.h>
 #include <SDL_image.h>
+#include "AudioManager.h"
 #include "sudoku.h"
 #include "cell.h"
 #include "ui.h"
@@ -112,13 +114,16 @@ void runSudoku4x4(SDL_Renderer* renderer, SDL_Window* window, TTF_Font* font, in
     while (dangchay) {
         SDL_Event e;
         while (SDL_PollEvent(&e)) {
+
             switch (e.type) {
             case SDL_QUIT:
+
                 dangchay = false;
                 break;
 
                 // khi ta nhấn chuột
             case SDL_MOUSEBUTTONDOWN:
+
                 vitri_chuot.x = e.button.x;
                 vitri_chuot.y = e.button.y;
                 // kiểm tra có đang nhấn vào số ko
@@ -145,12 +150,20 @@ void runSudoku4x4(SDL_Renderer* renderer, SDL_Window* window, TTF_Font* font, in
 
                 if (vitri_chuot.y > buttonsStartY && vitri_chuot.x > buttonsGroupStartX && 
                     vitri_chuot.x < (buttonsGroupStartX + buttonWidth) && vitri_chuot.y < (buttonsStartY + buttonHeight)) {
+
+                    Mix_HaltMusic();
+
                     if (kiemtrabang_dung(bangDangChoi)) {
+
+                        AudioManager::getInstance().playWin();
                         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "you winn!!", ":33 đúng rồi đoáa!", cua_so_gemm);
                     }
                     else {
+                        AudioManager::getInstance().playLose();
                         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Oopps!", "Sai rùi bạn eiii :((", cua_so_gemm);
                     }
+
+                    Mix_PlayMusic(AudioManager::getInstance().getGameMusic(), -1); // chạy lại âm thanh 
                 }
 
                 // ấn vào reset thì tạo lại bảngg
@@ -248,11 +261,16 @@ void runSudoku9x9(SDL_Renderer* renderer, SDL_Window* window, TTF_Font* font, in
         while (SDL_PollEvent(&e)) {
             switch (e.type) {
             case SDL_QUIT:
+
                 dangchay = false;
                 break;
+
+            // khi nhấn chuột
             case SDL_MOUSEBUTTONDOWN:
+
                 vitri_chuot.x = e.button.x;
                 vitri_chuot.y = e.button.y;
+                // kiểm tra vị trí nhấn
                 for (auto& so : dayso_luachon) {
                     if (SDL_PointInRect(&vitri_chuot, &so.rect)) {
                         dang_keo = true;
@@ -261,6 +279,8 @@ void runSudoku9x9(SDL_Renderer* renderer, SDL_Window* window, TTF_Font* font, in
                 }
                 break;
             case SDL_MOUSEBUTTONUP:
+
+                // khi thả chuột
                 if (dang_keo) {
                     for (auto& cell : oTrongBang) {
                         if (!cell.fixed && SDL_PointInRect(&vitri_chuot, &cell.rect)) {
@@ -276,16 +296,19 @@ void runSudoku9x9(SDL_Renderer* renderer, SDL_Window* window, TTF_Font* font, in
                 if (vitri_chuot.y > buttonsStartY && vitri_chuot.x > buttonsGroupStartX &&
                     vitri_chuot.x < (buttonsGroupStartX + buttonWidth) && vitri_chuot.y < (buttonsStartY + buttonHeight)) {
                     if (kiemtrabang_dung(bangDangChoi)) {
+                        AudioManager::getInstance().playWin();
                         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "you winn!!", ":33 đúng rồi đoáa!", cua_so_gemm);
                     }
                     else {
+                        AudioManager::getInstance().playLose();
                         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Oopps!", "Sai rùi bạn eiii :((", cua_so_gemm);
                     }
                 }
 
                 if (vitri_chuot.y > buttonsStartY && vitri_chuot.x > (buttonsGroupStartX + buttonWidth + buttonPadding) &&
                     vitri_chuot.x < (buttonsGroupStartX + 2 * buttonWidth + buttonPadding) && vitri_chuot.y < (buttonsStartY + buttonHeight)) {
-                    // Gọi lại khoitao_bang cho đúng màn 9x9
+                    
+                   // Gọi lại khoitao_bang cho đúng màn 9x9
                     khoitao_bang(9, 50, 30);
                 }
 
@@ -296,6 +319,8 @@ void runSudoku9x9(SDL_Renderer* renderer, SDL_Window* window, TTF_Font* font, in
                 break;
 
             case SDL_MOUSEMOTION:
+                // khi kéo chuột 
+
                 vitri_chuot.x = e.motion.x;
                 vitri_chuot.y = e.motion.y;
                 break;
@@ -339,9 +364,14 @@ void runSudoku9x9(SDL_Renderer* renderer, SDL_Window* window, TTF_Font* font, in
 int main(int argc, char* argv[]) {
 
     SDL_Init(SDL_INIT_VIDEO);
+
     TTF_Init();
 
     IMG_Init(IMG_INIT_PNG);
+
+    AudioManager& audio = AudioManager::getInstance();
+    audio.init();
+
 
     SDL_Window* window = SDL_CreateWindow("Mini Sudoku", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 850, 750, 0);
     SDL_Renderer* main_renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
@@ -386,9 +416,12 @@ int main(int argc, char* argv[]) {
            
     }
 
+    audio.cleanup();
+
     TTF_CloseFont(font);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
+
     IMG_Quit();
     TTF_Quit();
     SDL_Quit();

@@ -4,13 +4,15 @@
 #include <vector>
 #include <SDL.h>
 #include <SDL_ttf.h>
-#include<string>
+#include <string>
 #include "cell.h"
+
 
 extern SDL_Renderer* renderer;
 extern TTF_Font* font;
 
-void vebangg(const std::vector<Cell>& grid, const std::vector<Cell>& choices, int draggingValue, SDL_Point mousePos, bool dragging);
+void vebangg(const std::vector<Cell>& grid, const std::vector<Cell>& choices,
+	int draggingValue, SDL_Point mousePos, bool dragging);
 void ve_kitu(const std::string& text, SDL_Rect rect, SDL_Color color);
 
 

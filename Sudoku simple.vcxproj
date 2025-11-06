@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Sudoku simple\AudioManager.h" />
     <ClInclude Include="Sudoku simple\cell.h" />
     <ClInclude Include="Sudoku simple\GameState.h" />
     <ClInclude Include="Sudoku simple\Menu.h" />
@@ -26,6 +27,7 @@
     <ClInclude Include="Sudoku simple\ui.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Sudoku simple\AudioManager.cpp" />
     <ClCompile Include="Sudoku simple\main.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
@@ -130,7 +132,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_ttf.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_ttf.lib;SDL2_image.lib;SDL2_mixer.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>SDL2_mixer.lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

@@ -1,5 +1,6 @@
 #include "ui.h"
 #include <string>
+
 using namespace std;
 
 SDL_Renderer* renderer = nullptr;
@@ -45,7 +46,9 @@ void ve_kitu(const string& ki_tu, SDL_Rect rect, SDL_Color mau) {
 // vẽ bảng sudoku và các ô lựa chọn
 
 void vebangg(const vector<Cell>& ke_o, const vector<Cell>& cac_so, int gia_tri_keo, SDL_Point vitri_chuot, bool dang_keo) {
+    
     for (auto& cell : ke_o)  {
+
         SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);
         SDL_RenderFillRect(renderer, &cell.rect);
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -63,7 +66,7 @@ void vebangg(const vector<Cell>& ke_o, const vector<Cell>& cac_so, int gia_tri_k
     }
      if (dang_keo && gia_tri_keo != 0) {
         SDL_Rect dragRect = {vitri_chuot.x - 25, vitri_chuot.y - 25, 50, 50};
-        ve_kitu(to_string(gia_tri_keo), dragRect, SDL_Color{255,0,0});
+        ve_kitu(to_string(gia_tri_keo), dragRect, SDL_Color{255,0,0});   // .vẽ bóng mờ khi kéo số
     }
 
 
