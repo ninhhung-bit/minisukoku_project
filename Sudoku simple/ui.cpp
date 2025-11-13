@@ -45,7 +45,8 @@ void ve_kitu(const string& ki_tu, SDL_Rect rect, SDL_Color mau) {
 }
 // vẽ bảng sudoku và các ô lựa chọn
 
-void vebangg(const vector<Cell>& ke_o, const vector<Cell>& cac_so, int gia_tri_keo, SDL_Point vitri_chuot, bool dang_keo) {
+void vebangg(const vector<Cell>& ke_o, const vector<Cell>& cac_so, int gia_tri_keo, 
+    SDL_Point vitri_chuot, bool dang_keo) {
     
     for (auto& cell : ke_o)  {
 

@@ -39,15 +39,19 @@ bool dien_vao_bang(vector<vector<int>>& bang, int hang, int cot) {
     int cot_tiep = (cot + 1) % n;
 
     vector<int> danh_sach(n);
+
     iota(danh_sach.begin(), danh_sach.end(), 1);
-    shuffle(danh_sach.begin(), danh_sach.end(), mt19937{ random_device{}() });
+
+    shuffle(danh_sach.begin(), danh_sach.end(), mt19937{ random_device{}() }); // giúp  mỗi lần là 1 bảng khác nhau
 
     for (int so : danh_sach) {
+
         if (so_hople(bang, hang, cot, so)) {
             bang[hang][cot] = so;
             if (dien_vao_bang(bang, dong_tiep, cot_tiep))
                 return true;
             bang[hang][cot] = 0;
+
         }
     }
     return false;

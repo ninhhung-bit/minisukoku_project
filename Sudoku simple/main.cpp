@@ -1,5 +1,5 @@
 #include <SDL.h>
-#include<iostream>
+#include <iostream>
 #include <SDL_ttf.h>
 #include <vector>
 #include <string>
@@ -27,6 +27,12 @@ vector<Cell> dayso_luachon;
 vector<vector<int>> dapAnDayDu;
 vector<vector<int>> bangDangChoi;
 // tạo bảng hoàn chỉnh, xoá ngẫu nhiên 1 số ô
+
+void runSudoku4x4(SDL_Renderer* renderer, SDL_Window* window, TTF_Font* font, int& ocanxoa, int& currentLevel, GameState& state);
+void runSudoku9x9(SDL_Renderer* renderer, SDL_Window* window, TTF_Font* font, int& ocanxoa, int& currentLevel, GameState& state);
+void loadNextLevel(SDL_Renderer* renderer, SDL_Window* window, TTF_Font* font, int& currentLevel, int& ocanxoa, GameState& state);
+
+
 void khoitao_bang(int gridSize, int kichthuoc , int ocanxoa) {
    
     dapAnDayDu = taoBangDayDu(gridSize);
@@ -83,7 +89,7 @@ void khoitao_bang(int gridSize, int kichthuoc , int ocanxoa) {
 }
 
 
-void runSudoku4x4(SDL_Renderer* renderer, SDL_Window* window, TTF_Font* font, int ocanxoa) {
+void runSudoku4x4(SDL_Renderer* renderer, SDL_Window* window, TTF_Font* font, int& ocanxoa, int& currentLevel, GameState& state) {
 
     khoitao_bang(4,80,ocanxoa);
 
@@ -118,6 +124,7 @@ void runSudoku4x4(SDL_Renderer* renderer, SDL_Window* window, TTF_Font* font, in
             switch (e.type) {
             case SDL_QUIT:
 
+                state = GameState::EXIT;
                 dangchay = false;
                 break;
 
@@ -157,6 +164,10 @@ void runSudoku4x4(SDL_Renderer* renderer, SDL_Window* window, TTF_Font* font, in
 
                         AudioManager::getInstance().playWin();
                         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "you winn!!", ":33 đúng rồi đoáa!", cua_so_gemm);
+
+                        loadNextLevel(renderer, cua_so_gemm, font, currentLevel, ocanxoa, state); // tự động nhảy level
+
+                        return;
                     }
                     else {
                         AudioManager::getInstance().playLose();
@@ -170,13 +181,14 @@ void runSudoku4x4(SDL_Renderer* renderer, SDL_Window* window, TTF_Font* font, in
 
                 if (vitri_chuot.y > buttonsStartY && vitri_chuot.x > (buttonsGroupStartX + buttonWidth + buttonPadding) &&
                     vitri_chuot.x < (buttonsGroupStartX + 2* buttonWidth + buttonPadding) && vitri_chuot.y < (buttonsStartY + buttonHeight)) {
-                    khoitao_bang(4,80,6);
+                    khoitao_bang(4,80,ocanxoa);
                 }
 
 
                 if (vitri_chuot.y > buttonsStartY && vitri_chuot.x > (buttonsGroupStartX + 2*buttonWidth + 2*buttonPadding) &&
                     vitri_chuot.x < (buttonsGroupStartX + 3 * buttonWidth + 2*buttonPadding) && vitri_chuot.y < (buttonsStartY + buttonHeight)) {
                     // Thoát khỏi vòng while -> quay lại menu
+                    state = GameState::MENU_MAIN;
                     return;
                 }
 
@@ -238,7 +250,7 @@ void runSudoku4x4(SDL_Renderer* renderer, SDL_Window* window, TTF_Font* font, in
 }
 
 
-void runSudoku9x9(SDL_Renderer* renderer, SDL_Window* window, TTF_Font* font, int ocanxoa) {
+void runSudoku9x9(SDL_Renderer* renderer, SDL_Window* window, TTF_Font* font, int& ocanxoa, int& currentLevel, GameState& state) {
 
     khoitao_bang(9, 50, ocanxoa);
 
@@ -249,7 +261,7 @@ void runSudoku9x9(SDL_Renderer* renderer, SDL_Window* window, TTF_Font* font, in
 
     SDL_Texture* backgroundTexture = IMG_LoadTexture(renderer, "9x9.png");
 
-    // Phần layout các nút bên dưới không phụ thuộc vào grid nên có thể giữ nguyên
+
     int buttonWidth = 140;
     int buttonHeight = 45;
     int buttonPadding = 30;
@@ -262,6 +274,7 @@ void runSudoku9x9(SDL_Renderer* renderer, SDL_Window* window, TTF_Font* font, in
             switch (e.type) {
             case SDL_QUIT:
 
+                state = GameState::EXIT;
                 dangchay = false;
                 break;
 
@@ -296,8 +309,12 @@ void runSudoku9x9(SDL_Renderer* renderer, SDL_Window* window, TTF_Font* font, in
                 if (vitri_chuot.y > buttonsStartY && vitri_chuot.x > buttonsGroupStartX &&
                     vitri_chuot.x < (buttonsGroupStartX + buttonWidth) && vitri_chuot.y < (buttonsStartY + buttonHeight)) {
                     if (kiemtrabang_dung(bangDangChoi)) {
+     
                         AudioManager::getInstance().playWin();
                         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "you winn!!", ":33 đúng rồi đoáa!", cua_so_gemm);
+                        loadNextLevel(renderer, cua_so_gemm, font, currentLevel, ocanxoa, state); // tự động nhảy level
+                        return;
+
                     }
                     else {
                         AudioManager::getInstance().playLose();
@@ -309,11 +326,12 @@ void runSudoku9x9(SDL_Renderer* renderer, SDL_Window* window, TTF_Font* font, in
                     vitri_chuot.x < (buttonsGroupStartX + 2 * buttonWidth + buttonPadding) && vitri_chuot.y < (buttonsStartY + buttonHeight)) {
                     
                    // Gọi lại khoitao_bang cho đúng màn 9x9
-                    khoitao_bang(9, 50, 30);
+                    khoitao_bang(9, 50, ocanxoa);
                 }
 
                 if (vitri_chuot.y > buttonsStartY && vitri_chuot.x > (buttonsGroupStartX + 2 * buttonWidth + 2 * buttonPadding) &&
                     vitri_chuot.x < (buttonsGroupStartX + 3 * buttonWidth + 2 * buttonPadding) && vitri_chuot.y < (buttonsStartY + buttonHeight)) {
+                    state = GameState::MENU_MAIN;
                     return;
                 }
                 break;
@@ -361,6 +379,20 @@ void runSudoku9x9(SDL_Renderer* renderer, SDL_Window* window, TTF_Font* font, in
 }
 
 
+// hàm để nhảy sang lv  tiếp theo
+void loadNextLevel(SDL_Renderer* renderer, SDL_Window* window, TTF_Font* font, int& currentLevel, int& ocanxoa, GameState& state) {
+    if (currentLevel == 4) {
+        currentLevel = 9;
+        ocanxoa = 30;
+        runSudoku9x9(renderer, window, font, ocanxoa, currentLevel, state);
+    }
+    else if (currentLevel == 9) {
+        ocanxoa += 5;
+        runSudoku9x9(renderer, window, font, ocanxoa, currentLevel, state);
+    }
+}
+
+
 int main(int argc, char* argv[]) {
 
     SDL_Init(SDL_INIT_VIDEO);
@@ -388,7 +420,11 @@ int main(int argc, char* argv[]) {
 
     SDL_Event e;
 
+    int currentLevel = 4;
+    int ocanxoa = 6;
+
     while (running) {
+
         while (SDL_PollEvent(&e)) {
             if (e.type == SDL_QUIT) {
                 running = false;
@@ -401,13 +437,15 @@ int main(int argc, char* argv[]) {
         if (state == GameState::EXIT) {
             running = false;
 
-        } else if (state == GameState::GAME_4x4) {
-            runSudoku4x4(renderer, window, font, 6);
-            state = GameState::MENU_MAIN; // quay lại menu sau khi chơi xong
+        }
+        else if (state == GameState::GAME_4x4) {
+            currentLevel = 4;
+            runSudoku4x4(renderer, window, font, ocanxoa, currentLevel, state); 
         }
         else if (state == GameState::GAME_9x9) {
-            runSudoku9x9(renderer, window, font, 30); 
-            state = GameState::MENU_MAIN;
+            currentLevel = 9;
+            ocanxoa = 30;
+            runSudoku9x9(renderer, window, font, ocanxoa, currentLevel, state); 
         }
        
         menu.render(state); 

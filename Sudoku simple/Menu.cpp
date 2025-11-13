@@ -145,11 +145,11 @@ GameState Menu::handleEvent(SDL_Event& e, GameState state) {
             AudioManager::getInstance().playClick();
 
             // âm lượng
-            int volume = AudioManager::getInstance().getVolume();   // 🔹 lấy âm lượng hiện tại
+            int volume = AudioManager::getInstance().getVolume();   //  lấy âm lượng hiện tại
             volume -= 32;
             if (volume < 0) volume = MIX_MAX_VOLUME;
 
-            AudioManager::getInstance().setVolume(volume);           // 🔹 áp dụng lại
+            AudioManager::getInstance().setVolume(volume);           //  áp dụng lại
 
             settingsButtons[0].text = "Volume: " + std::to_string(volume);
 
